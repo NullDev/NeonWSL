@@ -156,8 +156,7 @@ START /MIN /WAIT "Acquire KDE Neon Keys" %GO% "apt-key adv --recv-keys --keyserv
 START /MIN /WAIT "Acquire Mozilla Seamonkey Keys" %GO% "apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2667CA5C"
 START /MIN /WAIT "apt-get update" %GO% "apt-get update 2> /tmp/apterr" && pause
 
-REM jammy breaks here...
-REM FOR /F %%A in ("%DISTROFULL%\rootfs\tmp\apterr") do If %%~zA NEQ 0 GOTO APTRELY 
+FOR /F %%A in ("%DISTROFULL%\rootfs\tmp\apterr") do If %%~zA NEQ 0 GOTO APTRELY 
 
 IF %NEONWSLVER% == bionic (GOTO apt-fast-bionic)
 IF %NEONWSLVER% == focal (GOTO apt-fast-focal)
