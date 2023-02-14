@@ -28,14 +28,13 @@ REM ## Enable WSL if required
 POWERSHELL -Command "$WSL = Get-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Windows-Subsystem-Linux' ; if ($WSL.State -eq 'Disabled') {Enable-WindowsOptionalFeature -FeatureName $WSL.FeatureName -Online}"
 
 REM ## Find system DPI setting and get installation parameters
-REM IF NOT EXIST "%TEMP%\windpi.ps1" POWERSHELL.EXE -ExecutionPolicy Bypass -Command "wget '%BASE%/windpi.ps1' -UseBasicParsing -OutFile '%TEMP%\windpi.ps1'"
+rem IF NOT EXIST "%TEMP%\windpi.ps1" POWERSHELL.EXE -ExecutionPolicy Bypass -Command "wget '%BASE%/windpi.ps1' -UseBasicParsing -OutFile '%TEMP%\windpi.ps1'"
 FOR /f "delims=" %%a in ('powershell -ExecutionPolicy bypass -command "%TEMP%\windpi.ps1" ') do set "WINDPI=%%a"
-
 :DI
 CLS && SET RUNSTART=%date% @ %time:~0,5%
 IF EXIST .\CMD.EXE CD ..\..
 
-ECHO [NeonWSL Installer: Modified Feb. 14th, 2022]
+ECHO [NeonWSL Installer: Modified Feb. 14th, 2023]
 ECHO:
 ECHO Script started at [%TIME:~0,8%] [%DATE%]
 SET RDPPRT=3399& SET /p RDPPRT=Port number for xRDP traffic or hit Enter to use default [3399]: 
@@ -44,21 +43,17 @@ SET SSHPRT=3322& SET /p SSHPRT=Port number for SSHd traffic or hit Enter to use 
 FOR /f "delims=" %%a in ('PowerShell -Command "%WINDPI% * 96" ') do set "LINDPI=%%a"
 FOR /f "delims=" %%a in ('PowerShell -Command 40 * "%WINDPI%" ') do set "KPANEL=%%a"
 SET DEFEXL=NONO& SET /p DEFEXL=[Not recommended, but speeds up the process] Type X to eXclude from Windows Defender: 
-
 REM ## Ask for WSL 1 or 2
 SET WSLVER=2& SET /p WSLVER=Please specify if you want this instance to run as WSL1 or WSL2 [2]: 
-
 REM ## Download Ubuntu and install packages
 SET NEONWSLVER=jammy& SET /p NEONWSLVER=Which LTE version of Ubuntu do you want to use? Options are bionic (18.04), focal (20.04), or jammy (22.04) [jammy]: 
-
 :ope
-REM ready for the path?
+rem ready for the path?
 SET DISTRODESTINATION=%USERPROFILE%& SET /p DISTRODESTINATION=Please provide a path to install this. By default it installs in the user folder. [%USERPROFILE%]:
 SET DISTROFULL=%DISTRODESTINATION%\%DISTRO%
 SET _rlt=%DISTROFULL:~2,2%
-
-REM not sure why we'd be using a remote folder
-REM IF "%_rlt%"=="\\" SET DISTROFULL=%CD%%DISTRO%
+rem not sure why we'd be using a remote folder
+rem IF "%_rlt%"=="\\" SET DISTROFULL=%CD%%DISTRO%
 ECHO Set a name for this KDE Neon instance.  Hit Enter to use default. 
 SET DISTRO=NeonWSL-%NEONWSLVER%& SET /p DISTRO=Keep this name simple, no space or underscore characters [NeonWSL-%NEONWSLVER%]:
 WSL.EXE -d %DISTRO% -e . > "%TEMP%\InstCheck.tmp"
@@ -68,9 +63,8 @@ IF %CHKIN% == 0 (ECHO. & ECHO There is a WSL distribution registered with that n
 IF %NEONWSLVER% == bionic (IF NOT EXIST "%TEMP%\bionic.tar.gz" POWERSHELL.EXE -Command "Start-BitsTransfer -source https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-wsl.rootfs.tar.gz -destination '%TEMP%\bionic.tar.gz'")
 IF %NEONWSLVER% == focal (IF NOT EXIST "%TEMP%\focal.tar.gz" POWERSHELL.EXE -Command "Start-BitsTransfer -source https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-wsl.rootfs.tar.gz -destination '%TEMP%\focal.tar.gz'")
 IF %NEONWSLVER% == jammy (IF NOT EXIST "%TEMP%\jammy.tar.gz" POWERSHELL.EXE -Command "Start-BitsTransfer -source https://cloud-images.ubuntu.com/wsl/jammy/current/ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz -destination '%TEMP%\jammy.tar.gz'")
-
-REM need to refactor the trap...
-REM IF ELSE (ECHO. & ECHO Umm, your response did not match the versions listed. Please press enter and try again. & PAUSE & GOTO ope)
+rem need to refactor the trap...
+rem IF ELSE (ECHO. & ECHO Umm, your response did not match the versions listed. Please press enter and try again. & PAUSE & GOTO ope)
 
 %DISTROFULL:~0,1%: & MKDIR "%DISTROFULL%" & CD "%DISTROFULL%" & MKDIR logs > NUL
 (ECHO [kWSL Inputs] && ECHO. && ECHO.   Distro: %DISTRO% && ECHO.     Path: %DISTROFULL% && ECHO. RDP Port: %RDPPRT% && ECHO. SSH Port: %SSHPRT% && ECHO.DPI Scale: %WINDPI% && ECHO.) > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% kWSL Inputs.log"
@@ -96,24 +90,21 @@ ECHO @NETSH AdvFirewall Firewall del rule name="%DISTRO% KDE Connect"           
 ECHO @NETSH AdvFirewall Firewall del rule name="%DISTRO% KDEinit"                                             >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @RD /S /Q "%DISTROFULL%"                                                                                 >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 
+
 ECHO [%TIME:~0,8%] Fetching LXRunOffline
 IF NOT EXIST "%DISTROFULL%\LxRunOffline-v3.5.0-msvc.zip" POWERSHELL.EXE -Command "Invoke-WebRequest -Uri %GETLXRUNOFFLINE% -OutFile '%DISTROFULL%\LxRunOffline-v3.5.0-msvc.zip'"
 ECHO [%TIME:~0,8%] Extracting LXRunOffline
 IF NOT EXIST "%DISTROFULL%\LxRunOffline\LxRunOffline.exe" POWERSHELL.EXE -ExecutionPolicy Bypass -Command "Expand-Archive -Path 'LxRunOffline-v3.5.0-msvc.zip' -DestinationPath '%DISTROFULL%\LxRunOffline'"
 IF NOT EXIST "%DISTROFULL%\LxRunOffline.exe" POWERSHELL.EXE -Command "Copy-Item '%DISTROFULL%\LxRunOffline\LxRunOffline.exe' -Destination '%DISTROFULL%'"
 POWERSHELL.EXE -Command "Copy-Item '%DISTROFULL%\LxRunOffline\LxRunOffline.exe' -Destination '%TEMP%'"
-
-REM Whitelist folder for windows defender
+rem Whitelist folder for windows defender
 IF %DEFEXL%==X (POWERSHELL.EXE -Command "wget %GETGISTCODE% -UseBasicParsing -OutFile '%DISTROFULL%\excludeWSL.ps1'" & START /WAIT /MIN "Add exclusions in Windows Defender" "POWERSHELL.EXE" "-ExecutionPolicy" "Bypass" "-Command" ".\excludeWSL.ps1" "%DISTROFULL%")
 ECHO [%TIME:~0,8%] Installing kWSL Distro [%DISTRO%] to "%DISTROFULL%" & ECHO This will take a few minutes, please wait...
 ECHO:& ECHO [%TIME:~0,8%] Importing distro userspace (~1m30s)
-
 IF %DISTROFULL:~-1%==\ SET "DISTROFULL=%DISTROFULL:~0,-1%"
-
 IF %NEONWSLVER% == bionic (START /WAIT /MIN "Installing Ubuntu Bionic Base..." "%TEMP%\LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%TEMP%\bionic.tar.gz" "-d" "%DISTROFULL%")
 IF %NEONWSLVER% == focal (START /WAIT /MIN "Installing Ubuntu Focal Base..." "%TEMP%\LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%TEMP%\focal.tar.gz" "-d" "%DISTROFULL%")
 IF %NEONWSLVER% == jammy (START /WAIT /MIN "Installing Ubuntu Jammy Base..." "%TEMP%\LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%TEMP%\jammy.tar.gz" "-d" "%DISTROFULL%")
-
 (FOR /F "usebackq delims=" %%v IN (`PowerShell -Command "whoami"`) DO set "WAI=%%v")
 ICACLS "%DISTROFULL%" /grant "%WAI%":(CI)(OI)F > NUL
 (COPY /Y "%TEMP%\LxRunOffline.exe" "%DISTROFULL%" > NUL )
@@ -122,7 +113,7 @@ ICACLS "%DISTROFULL%" /grant "%WAI%":(CI)(OI)F > NUL
 IF %NEONWSLVER% == bionic (GOTO bionic-sources)
 IF %NEONWSLVER% == focal (GOTO focal-sources)
 IF %NEONWSLVER% == jammy (GOTO jammy-sources)
-
+ 
 :bionic-sources
 ECHO [%TIME:~0,8%] Update repositories and clone kWSL repo (~1m15s)
 %GO% "echo 'deb http://archive.ubuntu.com/ubuntu/ bionic main restricted universe' > /etc/apt/sources.list"
@@ -154,9 +145,8 @@ ECHO [%TIME:~0,8%] Update repositories and clone kWSL repo (~1m15s)
 START /MIN /WAIT "Git Clone kWSL" %GO% "cd /tmp ; git clone -b %BRANCH% --depth=1 https://github.com/%GITORG%/%GITPRJ%.git"
 START /MIN /WAIT "Acquire KDE Neon Keys" %GO% "apt-key adv --recv-keys --keyserver keyserver.ubuntu.com E6D4736255751E5D"
 START /MIN /WAIT "Acquire Mozilla Seamonkey Keys" %GO% "apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2667CA5C"
-START /MIN /WAIT "apt-get update" %GO% "apt-get update 2> /tmp/apterr" && pause
-
-FOR /F %%A in ("%DISTROFULL%\rootfs\tmp\apterr") do If %%~zA NEQ 0 GOTO APTRELY 
+START /MIN /WAIT "apt-get update" %GO% "apt-get update 2> /tmp/apterr"
+FOR /F %%A in ("%DISTROFULL%\rootfs\tmp\apterr") do If %%~zA NEQ 0 GOTO APTRELY
 
 IF %NEONWSLVER% == bionic (GOTO apt-fast-bionic)
 IF %NEONWSLVER% == focal (GOTO apt-fast-focal)
@@ -216,8 +206,7 @@ ECHO [%TIME:~0,8%] Cleaning-up... (~0m45s)
 
 SET /A SESMAN = %RDPPRT% - 50
 %GO% "which schtasks.exe" > "%TEMP%\SCHT.tmp" & set /p SCHT=<"%TEMP%\SCHT.tmp"
-
-REM restartwsl is missing?
+rem restartwsl is missing?
 %GO% "sed -i 's#SCHT#%SCHT%#g' /tmp/kWSL/dist/usr/local/bin/restartwsl ; sed -i 's#DISTRO#%DISTRO%#g' /tmp/kWSL/dist/usr/local/bin/restartwsl"
 %GO% "sed -i 's/QQQ/%WINDPI%/g' /tmp/kWSL/dist/etc/skel/.config/kdeglobals"
 %GO% "sed -i 's/QQQ/%LINDPI%/g' /tmp/kWSL/dist/etc/skel/.config/kcmfonts"
@@ -245,7 +234,7 @@ REM restartwsl is missing?
 %GO% "cp -Rp /tmp/kWSL/dist/* / ; cp -Rp /tmp/kWSL/dist/etc/skel/.cache /root ; cp -Rp /tmp/kWSL/dist/etc/skel/.config /root ; cp -Rp /tmp/kWSL/dist/etc/skel/.local /root"
 START /MIN /WAIT "Updates for WSL1 Compatibility" "%DISTROFULL%\LxRunOffline.exe" "r" "-n" "%DISTRO%" "-c" "dpkg -i /tmp/kWSL/deb/libkf5activitiesstats*.deb /tmp/kWSL/deb/kactivitymanagerd*.deb /tmp/kWSL/deb/kinfocenter*.deb /tmp/kWSL/deb/klassy*.deb"
 START /MIN /WAIT "DBUS WSL1 Packages" "%DISTROFULL%\LxRunOffline.exe" "r" "-n" "%DISTRO%" "-c" "dpkg --purge --force-all dbus dbus-x11 libdbus-1-3 dbus-user-session ; dpkg -i --force-all /tmp/kWSL/deb-dbus/libdbus-1-3_*.deb /tmp/kWSL/deb-dbus/dbus_*.deb /tmp/kWSL/deb-dbus/dbus-x11_*.deb /tmp/kWSL/deb-dbus/xdg-desktop-portal_*.deb /tmp/kWSL/deb-dbus/libdconf1_*.deb"
-REM %GO% "apt-mark hold dbus dbus-x11 kactivitymanagerd kinfocenter libdbus-1-3 libkf5activitiesstats1 xdg-desktop-portal libdconf1" > NUL
+rem %GO% "apt-mark hold dbus dbus-x11 kactivitymanagerd kinfocenter libdbus-1-3 libkf5activitiesstats1 xdg-desktop-portal libdconf1" > NUL
 
 SET RUNEND=%date% @ %time:~0,5%
 CD %DISTROFULL% 
@@ -257,8 +246,7 @@ POWERSHELL -Command $prd = read-host "Enter password for %XU%" -AsSecureString ;
 %GO% "useradd -m -p nulltemp -s /bin/bash %XU%"
 %GO% "(echo '%XU%:%PWO%') | chpasswd"
 %GO% "echo '%XU% ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers"
-
-REM kWSL needs generated
+rem kWSL needs generated
 %GO% "echo 'session bpp:i:32' >> /tmp/kWSL/kWSL.rdp"
 %GO% "echo 'allow desktop composition:i:1' >> /tmp/kWSL/kWSL.rdp"
 %GO% "echo 'connection type:i:6' >> /tmp/kWSL/kWSL.rdp"
