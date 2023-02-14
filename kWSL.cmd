@@ -22,7 +22,7 @@ SET GITPRJ=NeonWSL
 SET BRANCH=master
 SET BASE=https://github.com/%GITORG%/%GITPRJ%/raw/%BRANCH%
 SET GETLXRUNOFFLINE=https://nulldev.org/cdn/LxRunOffline-v3.5.0-11-msvc.zip
-SET GETGISTCODE=https://gist.githubusercontent.com/noelbundick/9c804a710eb76e1d6a234b14abf42a52/raw/41a56a8fc20d360232b8735c322181a233f8ff5c/excludeWSL.ps1
+SET GETGISTCODE=%BASE%/excludeWSL.ps1
 
 REM ## Enable WSL if required
 POWERSHELL -Command "$WSL = Get-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Windows-Subsystem-Linux' ; if ($WSL.State -eq 'Disabled') {Enable-WindowsOptionalFeature -FeatureName $WSL.FeatureName -Online}"
