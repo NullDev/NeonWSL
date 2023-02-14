@@ -104,8 +104,12 @@ ECHO:& ECHO [%TIME:~0,8%] Importing distro userspace (~1m30s)
 IF %NEONWSLVER% == bionic (START /WAIT /MIN "Installing Ubuntu Bionic Base..." "%TEMP%\LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%TEMP%\bionic.tar.gz" "-d" "%DISTROFULL%")
 IF %NEONWSLVER% == focal (START /WAIT /MIN "Installing Ubuntu Focal Base..." "%TEMP%\LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%TEMP%\focal.tar.gz" "-d" "%DISTROFULL%")
 IF %NEONWSLVER% == jammy (START /WAIT /MIN "Installing Ubuntu Jammy Base..." "%TEMP%\LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%TEMP%\jammy.tar.gz" "-d" "%DISTROFULL%")
-(FOR /F "usebackq delims=" %%v IN (`PowerShell -Command "whoami"`) DO set "WAI=%%v") & ICACLS "%DISTROFULL%" /grant "%WAI%":(CI)(OI)F > NUL
-(COPY /Y "%TEMP%\LxRunOffline.exe" "%DISTROFULL%" > NUL ) & "%DISTROFULL%\LxRunOffline.exe" sd -n "%DISTRO%"
+(FOR /F "usebackq delims=" %%v IN (`PowerShell -Command "whoami"`) DO set "WAI=%%v")
+SET "I_DISTROFULL=%DISTROFULL%"
+IF %I_DISTROFULL:~-1%==\ SET I_DISTROFULL=%I_DISTROFULL:~0,-1%
+ICACLS "%I_DISTROFULL%" /grant "%WAI%":(CI)(OI)F > NUL
+(COPY /Y "%TEMP%\LxRunOffline.exe" "%DISTROFULL%" > NUL )
+"%DISTROFULL%\LxRunOffline.exe" sd -n "%DISTRO%"
 
 IF %NEONWSLVER% == bionic (GOTO bionic-sources)
 IF %NEONWSLVER% == focal (GOTO focal-sources)
