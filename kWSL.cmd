@@ -46,10 +46,10 @@ FOR /f "delims=" %%a in ('PowerShell -Command 40 * "%WINDPI%" ') do set "KPANEL=
 SET DEFEXL=NONO& SET /p DEFEXL=[Not recommended, but speeds up the process] Type X to eXclude from Windows Defender: 
 
 REM ## Ask for WSL 1 or 2
-SET WSLVER=1& SET /p WSLVER=Please specify if you want this instance to run as WSL1 or WSL2 [1]: 
+SET WSLVER=2& SET /p WSLVER=Please specify if you want this instance to run as WSL1 or WSL2 [2]: 
 
 REM ## Download Ubuntu and install packages
-SET NEONWSLVER=focal& SET /p NEONWSLVER=Which LTE version of Ubuntu do you want to use? Options are bionic (18.04), focal (20.04), or jammy (22.04) [focal]: 
+SET NEONWSLVER=jammy& SET /p NEONWSLVER=Which LTE version of Ubuntu do you want to use? Options are bionic (18.04), focal (20.04), or jammy (22.04) [jammy]: 
 
 :ope
 REM ready for the path?
