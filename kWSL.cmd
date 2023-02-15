@@ -42,10 +42,11 @@ SET SSHPRT=3322& SET /p SSHPRT=Port number for SSHd traffic or hit Enter to use 
                  SET /p WINDPI=Set a custom DPI scale, or hit Enter for Windows default [%WINDPI%]: 
 FOR /f "delims=" %%a in ('PowerShell -Command "%WINDPI% * 96" ') do set "LINDPI=%%a"
 FOR /f "delims=" %%a in ('PowerShell -Command 40 * "%WINDPI%" ') do set "KPANEL=%%a"
-SET DEFEXL=NONO& SET /p DEFEXL=[Not recommended, but speeds up the process] Type X to eXclude from Windows Defender: 
-REM ## Ask for WSL 1 or 2
-SET WSLVER=2& SET /p WSLVER=Please specify if you want this instance to run as WSL1 or WSL2 [2]: 
+
+SET DEFEXL=X
+SET WSLVER=2
 SET NEONWSLVER=jammy
+
 :ope
 rem ready for the path?
 SET DISTRODESTINATION=%USERPROFILE%& SET /p DISTRODESTINATION=Please provide a path to install this. By default it installs in the user folder. [%USERPROFILE%]:
