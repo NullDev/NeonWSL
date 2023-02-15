@@ -52,6 +52,7 @@ rem ready for the path?
 SET DISTRODESTINATION=%USERPROFILE%& SET /p DISTRODESTINATION=Please provide a path to install this. By default it installs in the user folder. [%USERPROFILE%]:
 SET DISTROFULL=%DISTRODESTINATION%\%DISTRO%
 SET _rlt=%DISTROFULL:~2,2%
+IF %DISTROFULL:~-1%==\ SET "DISTROFULL=%DISTROFULL:~0,-1%"
 rem not sure why we'd be using a remote folder
 rem IF "%_rlt%"=="\\" SET DISTROFULL=%CD%%DISTRO%
 ECHO Set a name for this KDE Neon instance.  Hit Enter to use default. 
@@ -101,7 +102,6 @@ rem Whitelist folder for windows defender
 IF %DEFEXL%==X (POWERSHELL.EXE -Command "wget %GETGISTCODE% -UseBasicParsing -OutFile '%DISTROFULL%\excludeWSL.ps1'" & START /WAIT /MIN "Add exclusions in Windows Defender" "POWERSHELL.EXE" "-ExecutionPolicy" "Bypass" "-Command" ".\excludeWSL.ps1" "%DISTROFULL%")
 ECHO [%TIME:~0,8%] Installing kWSL Distro [%DISTRO%] to "%DISTROFULL%" & ECHO This will take a few minutes, please wait...
 ECHO:& ECHO [%TIME:~0,8%] Importing distro userspace (~1m30s)
-IF %DISTROFULL:~-1%==\ SET "DISTROFULL=%DISTROFULL:~0,-1%"
 IF %NEONWSLVER% == bionic (START /WAIT /MIN "Installing Ubuntu Bionic Base..." "%TEMP%\LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%TEMP%\bionic.tar.gz" "-d" "%DISTROFULL%")
 IF %NEONWSLVER% == focal (START /WAIT /MIN "Installing Ubuntu Focal Base..." "%TEMP%\LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%TEMP%\focal.tar.gz" "-d" "%DISTROFULL%")
 IF %NEONWSLVER% == jammy (START /WAIT /MIN "Installing Ubuntu Jammy Base..." "%TEMP%\LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%TEMP%\jammy.tar.gz" "-d" "%DISTROFULL%")
