@@ -106,22 +106,22 @@ ICACLS "%DISTROFULL%" /grant "%WAI%":(CI)(OI)F > NUL
 "%DISTROFULL%\LxRunOffline.exe" sd -n "%DISTRO%"
 
 ECHO [%TIME:~0,8%] Update repositories and clone kWSL repo (~1m15s)
-%GO% "echo 'deb http://archive.ubuntu.com/ubuntu/ jammy main restricted universe' > /etc/apt/sources.list"
-%GO% "echo 'deb http://archive.ubuntu.com/ubuntu/ jammy-updates main restricted universe' >> /etc/apt/sources.list"
-%GO% "echo 'deb http://security.ubuntu.com/ubuntu/ jammy-security main restricted universe' >> /etc/apt/sources.list"
+%GO% "echo 'deb http://archive.ubuntu.com/ubuntu/ jammy main restricted universe multiverse' > /etc/apt/sources.list"
+%GO% "echo 'deb http://archive.ubuntu.com/ubuntu/ jammy-updates main restricted universe multiverse' >> /etc/apt/sources.list"
+%GO% "echo 'deb http://security.ubuntu.com/ubuntu/ jammy-security main restricted universe multiverse' >> /etc/apt/sources.list"
 %GO% "echo 'deb http://archive.neon.kde.org/user/ jammy main' >>  /etc/apt/sources.list.d/neon.list"
 %GO% "rm -rf /etc/apt/apt.conf.d/20snapd.conf /etc/rc2.d/S01whoopsie /etc/init.d/console-setup.sh" 
 
 :APTRELY
 START /MIN /WAIT "Git Clone kWSL" %GO% "cd /tmp ; git clone -b %BRANCH% --depth=1 https://github.com/%GITORG%/%GITPRJ%.git kWSL"
-START /MIN /WAIT "Acquire KDE Neon Keys" %GO% "apt-key adv --recv-keys --keyserver keyserver.ubuntu.com E6D4736255751E5D"
+rem #START /MIN /WAIT "Acquire KDE Neon Keys" %GO% "apt-key adv --recv-keys --keyserver keyserver.ubuntu.com E6D4736255751E5D"
 START /MIN /WAIT "apt-get update" %GO% "apt-get update 2> /tmp/apterr"
 rem FOR /F %%A in ("%DISTROFULL%\rootfs\tmp\apterr") do If %%~zA NEQ 0 GOTO APTRELY
 
-START /MIN /WAIT "apt-fast" %GO% "DEBIAN_FRONTEND=noninteractive dpkg -i /tmp/kWSL/deb/aria2_1.35.0-1build1_amd64.deb /tmp/kWSL/deb/libaria2-0_1.35.0-1build1_amd64.deb /tmp/kWSL/deb/libssh2-1_1.8.0-2.1build1_amd64.deb /tmp/kWSL/deb/libc-ares2_1.15.0-1build1_amd64.deb ; chmod +x /tmp/kWSL/dist/usr/local/bin/apt-fast ; cp -p /tmp/kWSL/dist/usr/local/bin/apt-fast /usr/local/bin" > NUL
+START /MIN /WAIT "apt-fast" %GO% "DEBIAN_FRONTEND=noninteractive dpkg -i /tmp/kWSL/deb/aria2_1.35.0-1build1_amd64.deb /tmp/kWSL/deb/libssh2-1_1.8.0-2.1build1_amd64.deb /tmp/kWSL/deb/libc-ares2_1.15.0-1build1_amd64.deb ; chmod +x /tmp/kWSL/dist/usr/local/bin/apt-fast ; cp -p /tmp/kWSL/dist/usr/local/bin/apt-fast /usr/local/bin" > NUL
 
 ECHO [%TIME:~0,8%] Remove un-needed packages (~1m30s)
-%GO% "DEBIAN_FRONTEND=noninteractive apt-get -y purge apparmor apport bolt cloud-init cloud-initramfs-copymods cloud-initramfs-dyn-netconf cryptsetup cryptsetup-initramfs dmeventd finalrd fwupd initramfs-tools initramfs-tools-core irqbalance isc-dhcp-client klibc-utils kpartx libaio1 libarchive13 libdevmapper-event1.02.1 libdns-export1109 libefiboot1 libefivar1 libestr0 libfastjson4 libfwupd2 libfwupdplugin1 libgcab-1.0-0 libgpgme11 libgudev-1.0-0 libgusb2 libisc-export1105 libisns0 libjson-glib-1.0-0 libjson-glib-1.0-common libklibc liblvm2cmd2.03 libmspack0 libnuma1 libsgutils2-2 libsmbios-c2 libtss2-esys0 liburcu6 libxmlb1 libxmlsec1 libxmlsec1-openssl libxslt1.1 linux-base lvm2 lz4 mdadm multipath-tools open-iscsi open-vm-tools overlayroot plymouth plymouth-theme-ubuntu-text popularity-contest sbsigntool secureboot-db sg3-utils sg3-utils-udev snapd squashfs-tools thin-provisioning-tools tpm-udev zerofree ; apt-get -y autoremove --purge" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Remove un-needed packages.log" 2>&1
+%GO% "DEBIAN_FRONTEND=noninteractive apt-get -y purge apparmor apport bolt cloud-init cloud-initramfs-copymods cloud-initramfs-dyn-netconf cryptsetup cryptsetup-initramfs dmeventd finalrd fwupd initramfs-tools initramfs-tools-core irqbalance isc-dhcp-client klibc-utils kpartx libaio1 libarchive13 libdevmapper-event1.02.1 libefiboot1 libefivar1 libestr0 libfastjson4 libfwupd2 libfwupdplugin1 libgcab-1.0-0 libgpgme11 libgudev-1.0-0 libgusb2 libisc-export1105 libisns0 libjson-glib-1.0-0 libjson-glib-1.0-common libklibc liblvm2cmd2.03 libmspack0 libnuma1 libsgutils2-2 libsmbios-c2 libtss2-esys0 libxmlb1 libxmlsec1 libxmlsec1-openssl libxslt1.1 linux-base lvm2 lz4 mdadm multipath-tools open-iscsi open-vm-tools overlayroot plymouth plymouth-theme-ubuntu-text popularity-contest sbsigntool secureboot-db sg3-utils sg3-utils-udev snapd squashfs-tools thin-provisioning-tools tpm-udev zerofree ; apt-get -y autoremove --purge" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Remove un-needed packages.log" 2>&1
 
 ECHO [%TIME:~0,8%] Remote Desktop Components (~2m45s)
 %GO% "DEBIAN_FRONTEND=noninteractive apt-fast -y install /tmp/kWSL/deb/picom_9.1-1_amd64.deb /tmp/kWSL/deb/xrdp_0.9.19-1_amd64.deb /tmp/kWSL/deb/xorgxrdp_0.2.18-1_amd64.deb /tmp/kWSL/deb/libfdk-aac1_0.1.6-1_amd64.deb /tmp/kWSL/deb/fonts-cascadia-code_2102.03-1_all.deb x11-apps x11-session-utils x11-xserver-utils dialog dumb-init inetutils-syslogd xdg-utils binutils putty unzip zip unar unzip samba-common-bin base-files ubuntu-release-upgrader-core python3-distupgrade lhasa arj unace liblhasa0 apt-config-icons apt-config-icons-hidpi apt-config-icons-large apt-config-icons-large-hidpi libgtkd-3-0 libphobos2-ldc-shared90 libvte-2.91-0 libvte-2.91-common libvted-3-0 moreutils tilix tilix-common libdbus-glib-1-2 libgdk-pixbuf2.0-bin libgtk-3-bin python3-gpg samba-dsdb-modules xbitmaps xterm --no-install-recommends" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Remote Desktop Components.log" 2>&1
@@ -134,7 +134,11 @@ REM ## %GO% "cd /tmp ; wget https://files.multimc.org/downloads/multimc_1.4-1.de
 REM ## %GO% "apt-get -y install supertuxkart /tmp/multimc_1.4-1.deb"
 
 ECHO [%TIME:~0,8%] Cleaning-up... (~0m45s)
+%GO% "apt --fix-broken install"
+%GO% "apt install -f"
 %GO% "dbus-uuidgen --ensure ; ln -s -f /var/lib/dbus/machine-id /etc/machine-id ; apt-get -y purge --autoremove wpasupplicant* libnetplan0* netplan.io* avahi-daemon libnss-mdns libimobiledevice6 libplist3 libupower-glib3 libusbmuxd6 wayland-utils ubuntu-advantage-tools distro-info upower mesa-vulkan-drivers gnustep-base-runtime gnustep-base-common gnustep-common libgc1c2 libobjc4 powermgmt-base unar networkd-dispatcher ; apt-get -y clean" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Final clean-up.log"
+%GO% "apt --fix-broken install"
+%GO% "apt install -f"
 
 SET /A SESMAN = %RDPPRT% - 50
 %GO% "which schtasks.exe" > "%TEMP%\SCHT.tmp" & set /p SCHT=<"%TEMP%\SCHT.tmp"
