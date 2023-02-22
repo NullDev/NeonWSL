@@ -1,6 +1,6 @@
 # [kWSL.cmd - KDE Neon for WSL](https://github.com/NullDev/NeonWSL)
 
-- Net-install of KDE Neon on WSL1 using xRDP.
+- Net-install of KDE Neon on WSL2 using xRDP.
 - Runs on Windows 10 AMD64 and Server 2019/2022 (including Hyper-V Core)
 - xRDP Display Server; no additional Xserver download/configuration required
 - High-quality RDP audio playback; video playback and YouTube work well and maintains audio sync.
