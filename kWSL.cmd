@@ -128,7 +128,7 @@ ECHO [%TIME:~0,8%] Remove un-needed packages (~1m30s)
 %GO% "apt install -f"
 
 ECHO [%TIME:~0,8%] Remote Desktop Components (~2m45s)
-%GO% "DEBIAN_FRONTEND=noninteractive apt install -y /tmp/kWSL/deb/libfdk-aac1_0.1.6-1_amd64.deb picom xrdp xorgxrdp fonts-cascadia-code x11-apps x11-session-utils x11-xserver-utils dialog dumb-init inetutils-syslogd xdg-utils binutils putty unzip zip unar unzip samba-common-bin base-files ubuntu-release-upgrader-core python3-distupgrade lhasa arj unace liblhasa0 apt-config-icons apt-config-icons-hidpi apt-config-icons-large apt-config-icons-large-hidpi libgtkd-3-0 libvte-2.91-0 libvte-2.91-common libvted-3-0 moreutils tilix tilix-common libdbus-glib-1-2 libgdk-pixbuf2.0-bin libgtk-3-bin python3-gpg samba-dsdb-modules xbitmaps xterm --no-install-recommends" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Remote Desktop Components.log" 2>&1
+%GO% "DEBIAN_FRONTEND=noninteractive apt install -y /tmp/kWSL/deb/libfdk-aac1_0.1.6-1_amd64.deb openssh-server picom xrdp xorgxrdp fonts-cascadia-code x11-apps x11-session-utils x11-xserver-utils dialog dumb-init inetutils-syslogd xdg-utils binutils putty unzip zip unar unzip samba-common-bin base-files ubuntu-release-upgrader-core python3-distupgrade lhasa arj unace liblhasa0 apt-config-icons apt-config-icons-hidpi apt-config-icons-large apt-config-icons-large-hidpi libgtkd-3-0 libvte-2.91-0 libvte-2.91-common libvted-3-0 moreutils tilix tilix-common libdbus-glib-1-2 libgdk-pixbuf2.0-bin libgtk-3-bin python3-gpg samba-dsdb-modules xbitmaps xterm --no-install-recommends" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Remote Desktop Components.log" 2>&1
 %GO% "apt --fix-broken install"
 %GO% "apt install -f"
 
@@ -144,7 +144,7 @@ REM ## %GO% "apt-get -y install supertuxkart /tmp/multimc_1.4-1.deb"
 ECHO [%TIME:~0,8%] Cleaning-up... (~0m45s)
 %GO% "apt --fix-broken install"
 %GO% "apt install -f"
-%GO% "dbus-uuidgen --ensure ; ln -s -f /var/lib/dbus/machine-id /etc/machine-id ; apt-get -y purge --autoremove wpasupplicant* libnetplan0* netplan.io* avahi-daemon libnss-mdns libimobiledevice6 libplist3 libupower-glib3 libusbmuxd6 wayland-utils ubuntu-advantage-tools distro-info upower mesa-vulkan-drivers gnustep-base-runtime gnustep-base-common gnustep-common libobjc4 powermgmt-base unar networkd-dispatcher ; apt-get -y clean" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Final clean-up.log"
+%GO% "dbus-uuidgen --ensure ; ln -s -f /var/lib/dbus/machine-id /etc/machine-id" rem ; apt-get -y purge --autoremove wpasupplicant* libnetplan0* netplan.io* avahi-daemon libnss-mdns libimobiledevice6 libplist3 libupower-glib3 libusbmuxd6 wayland-utils ubuntu-advantage-tools distro-info upower mesa-vulkan-drivers gnustep-base-runtime gnustep-base-common gnustep-common libobjc4 powermgmt-base unar networkd-dispatcher ; apt-get -y clean" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Final clean-up.log"
 %GO% "apt --fix-broken install"
 %GO% "apt install -f"
 
@@ -162,12 +162,17 @@ SET /A SESMAN = %RDPPRT% - 50
 %GO% "sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config"
 %GO% "sed -i 's/WSLINSTANCENAME/%DISTRO%/g' /tmp/kWSL/dist/usr/local/bin/initwsl"
 %GO% "sed -i 's/\\h/%DISTRO%/g' /tmp/kWSL/dist/etc/skel/.bashrc"
+
+START /MIN /WAIT "Updates for RDP Compatibility" "%DISTROFULL%\LxRunOffline.exe" "r" "-n" "%DISTRO%" "-c" "dpkg -i /tmp/kWSL/deb/klassy*.deb"
+%GO% "apt --fix-broken install"
+
 rem %GO% "sed -i 's#Exec=ksystemlog -qwindowtitle %%c#Exec=kdesu -n --noignorebutton -d -- bash -c +source /etc/profile.d/kWSL.sh ; ksystemlog -qwindowtitle %%c+#g' /usr/share/applications/org.kde.ksystemlog.desktop ; sed -i 's#+#\"#g' /usr/share/applications/org.kde.ksystemlog.desktop ; sed -i 's#X-KDE-SubstituteUID=true#X-KDE-SubstituteUID=false#g' /usr/share/applications/org.kde.ksystemlog.desktop"
 rem %GO% "sed -i 's#Exec=plasma-discover %%F#Exec=kdesu -n --noignorebutton -d -- bash -c +source /etc/profile.d/kWSL.sh ; plasma-discover --backends packagekit-backend,kns-backend %%F+#g' /usr/share/applications/org.kde.discover.desktop"
 rem %GO% "sed -i 's#Exec=plasma-discover --mode update#Exec=kdesu -n --noignorebutton -d -- bash -c +source /etc/profile.d/kWSL.sh ; plasma-discover --backends packagekit-backend,kns-backend --mode update+#g' /usr/share/applications/org.kde.discover.desktop ; sed -i 's#+#\"#g' /usr/share/applications/org.kde.discover.desktop"
 rem %GO% "sed -i 's#Exec=plasma-discover --mode update#Exec=kdesu -n --noignorebutton -d -- bash -c +source /etc/profile.d/kWSL.sh ; plasma-discover --backends packagekit-backend,kns-backend --mode update+#g' /usr/share/applications/org.kde.discover.urlhandler.desktop ; sed -i 's#+#\"#g' /usr/share/applications/org.kde.discover.urlhandler.desktop"
 rem %GO% "sed -i 's#Exec=plasma-discover --mode update#Exec=kdesu -n --noignorebutton -d -- bash -c +source /etc/profile.d/kWSL.sh ; plasma-discover --backends packagekit-backend,kns-backend --mode update+#g' /usr/share/applications/org.kde.discover.apt.urlhandler.desktop ; sed -i 's#+#\"#g' /usr/share/applications/org.kde.discover.apt.urlhandler.desktop"
 rem %GO% "sed -i 's#Exec=muon#Exec=kdesu -n --noignorebutton -d -- bash -c +source /etc/profile.d/kWSL.sh ; muon+#g' /usr/share/applications/org.kde.muon.desktop ; sed -i 's#+#\"#g' /usr/share/applications/org.kde.muon.desktop"
+%GO% "apt --fix-broken install"
 %GO% "cp /mnt/c/Windows/Fonts/*.ttf /usr/share/fonts/truetype ; ln -s /usr/share/plasma/desktoptheme/breeze-light /usr/share/plasma/desktoptheme/breeze"
 %GO% "ssh-keygen -A ; adduser xrdp ssl-cert" > NUL
 %GO% "sed -i 's/adwaita//g' /usr/share/themes/Breeze/gtk-2.0/widgets/misc ; sed -i 's/adwaita//g' /usr/share/themes/Breeze-Dark/gtk-2.0/widgets/misc ; rm -rf /usr/share/themes/Default ; cp -Rp /usr/share/themes/Breeze-Dark /usr/share/themes/Default"
@@ -176,7 +181,7 @@ rem %GO% "sed -i 's#Exec=muon#Exec=kdesu -n --noignorebutton -d -- bash -c +sour
 %GO% "chmod 755 /tmp/kWSL/dist/etc/profile.d/kWSL.sh ; chmod +x /tmp/kWSL/dist/etc/profile.d/kWSL.sh ; chmod 755 /tmp/kWSL/dist/etc/xrdp/startwm.sh ; chmod +x /tmp/kWSL/dist/etc/xrdp/startwm.sh"
 %GO% "unamestr=`uname -r` ; if [[ "$unamestr" == '4.4.0-17763-Microsoft' ]]; then apt-get purge -y plasma-discover ; sed -i 's/discover/muon/g' /tmp/kWSL/dist/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc ; ln -s /usr/bin/software-properties-qt /usr/bin/software-properties-kde ; fi" > NUL
 %GO% "cp -Rp /tmp/kWSL/dist/* / ; cp -Rp /tmp/kWSL/dist/etc/skel/.cache /root ; cp -Rp /tmp/kWSL/dist/etc/skel/.config /root ; cp -Rp /tmp/kWSL/dist/etc/skel/.local /root"
-START /MIN /WAIT "Updates for RDP Compatibility" "%DISTROFULL%\LxRunOffline.exe" "r" "-n" "%DISTRO%" "-c" "dpkg -i /tmp/kWSL/deb/klassy*.deb"
+
 rem START /MIN /WAIT "Updates for WSL1 Compatibility" "%DISTROFULL%\LxRunOffline.exe" "r" "-n" "%DISTRO%" "-c" "dpkg -i /tmp/kWSL/deb/libkf5activitiesstats*.deb /tmp/kWSL/deb/kactivitymanagerd*.deb /tmp/kWSL/deb/kinfocenter*.deb /tmp/kWSL/deb/klassy*.deb"
 rem START /MIN /WAIT "DBUS WSL1 Packages" "%DISTROFULL%\LxRunOffline.exe" "r" "-n" "%DISTRO%" "-c" "dpkg --purge --force-all dbus dbus-x11 libdbus-1-3 dbus-user-session ; dpkg -i --force-all /tmp/kWSL/deb-dbus/libdbus-1-3_*.deb /tmp/kWSL/deb-dbus/dbus_*.deb /tmp/kWSL/deb-dbus/dbus-x11_*.deb /tmp/kWSL/deb-dbus/xdg-desktop-portal_*.deb /tmp/kWSL/deb-dbus/libdconf1_*.deb"
 rem %GO% "apt-mark hold dbus dbus-x11 kactivitymanagerd kinfocenter libdbus-1-3 libkf5activitiesstats1 xdg-desktop-portal libdconf1" > NUL
