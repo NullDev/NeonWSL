@@ -117,8 +117,8 @@ START /MIN /WAIT "Acquire KDE Neon Keys" %GO% "apt-key adv --recv-keys --keyserv
 START /MIN /WAIT "apt-get update" %GO% "apt-get update 2> /tmp/apterr"
 
 START /MIN /WAIT "apt" %GO% "DEBIAN_FRONTEND=noninteractive chmod +x /tmp/kWSL/dist/usr/local/bin/apt ; cp -p /tmp/kWSL/dist/usr/local/bin/apt /usr/local/bin" > NUL
-%GO% "DEBIAN_FRONTEND=noninteractive apt upgrade"
-%GO% "DEBIAN_FRONTEND=noninteractive apt install -y aria2 libssh2 libc-ares2"
+%GO% "DEBIAN_FRONTEND=noninteractive apt upgrade -y"
+%GO% "DEBIAN_FRONTEND=noninteractive apt install -y /tmp/kWSL/deb/libssh2-1_1.8.0-2.1build1_amd64.deb aria2 libc-ares2"
 %GO% "apt --fix-broken install"
 %GO% "apt install -f"
 
