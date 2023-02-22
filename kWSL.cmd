@@ -48,7 +48,6 @@ SET WSLVER=2
 SET NEONWSLVER=jammy
 
 :ope
-rem ready for the path?
 SET DISTRODESTINATION=%USERPROFILE%& SET /p DISTRODESTINATION=Please provide a path to install this. By default it installs in the user folder. [%USERPROFILE%]:
 SET DISTROFULL=%DISTRODESTINATION%\%DISTRO%
 SET _rlt=%DISTROFULL:~2,2%
@@ -62,8 +61,6 @@ FOR /f %%i in ("%TEMP%\InstCheck.tmp") do set CHKIN=%%~zi
 SET GO="%DISTROFULL%\LxRunOffline.exe" r -n "%DISTRO%" -c
 IF %CHKIN% == 0 (ECHO. & ECHO There is a WSL distribution registered with that name; uninstall it or choose a new name. & PAUSE & GOTO ope)
 IF %NEONWSLVER% == jammy (IF NOT EXIST "%TEMP%\jammy.tar.gz" POWERSHELL.EXE -Command "Start-BitsTransfer -source https://cloud-images.ubuntu.com/wsl/jammy/current/ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz -destination '%TEMP%\jammy.tar.gz'")
-rem need to refactor the trap...
-rem IF ELSE (ECHO. & ECHO Umm, your response did not match the versions listed. Please press enter and try again. & PAUSE & GOTO ope)
 
 %DISTROFULL:~0,1%: & MKDIR "%DISTROFULL%" & CD "%DISTROFULL%" & MKDIR logs > NUL
 (ECHO [kWSL Inputs] && ECHO. && ECHO.   Distro: %DISTRO% && ECHO.     Path: %DISTROFULL% && ECHO. RDP Port: %RDPPRT% && ECHO. SSH Port: %SSHPRT% && ECHO.DPI Scale: %WINDPI% && ECHO.) > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% kWSL Inputs.log"
@@ -136,6 +133,8 @@ ECHO [%TIME:~0,8%] KDE Neon User Edition (~7m30s)
 %GO% "DEBIAN_FRONTEND=noninteractive apt install -y ieee-data d-feet apulse ark aspell-en breeze-gtk-theme desktop-file-utils gdb gdbserver gstreamer1.0-plugins-base hunspell-en-us im-config javascript-common kaccounts-providers kactivities-bin kde-config-gtk-style kde-config-gtk-style-preview kde-plasma-desktop kdeconnect kdiff3 kgamma5 khelpcenter kimageformat-plugins kinfocenter kio-extras kmenuedit kpackagelauncherqml kpackagetool5 krename krusader kscreen ksshaskpass ksysguard ksysguard-data kuserfeedback-doc kwalletmanager kwin-x11 kwrited libaacs0 libappstream-glib8 libbdplus0 libcanberra-gtk3-module libcc1-0 libc-dbg libfftw3-single3 libfwupd2 libjs-jquery libkf5baloowidgets-bin libkf5config-bin libkf5dbusaddons-bin libkf5iconthemes-bin libkf5kdelibs4support5-bin libkf5khtml-bin libkf5pulseaudioqt2 libkf5purpose-bin libkf5xmlgui-bin libmarkdown2 libmtp-runtime libostree-1-1 libpam-kwallet5 libproxy-tools libqt5designer5 libqt5help5 libqt5multimedia5-plugins libqt5test5 media-player-info mesa-utils mesa-va-drivers debconf-kde-data libdebconf-kde1 muon p11-kit p11-kit-modules p7zip-full pulseaudio pavucontrol plasma-discover plasma-discover-common plasma-workspace-wallpapers policykit-desktop-privileges poppler-data pulseaudio-equalizer python3-dbus.mainloop.pyqt5 python3-pyqt5 python3-sip qml-module-org-kde-runnermodel qml-module-org-kde-purpose qml-module-org-kde-prison qt5-gtk-platformtheme qtspeech5-speechd-plugin qttranslations5-l10n qtwayland5 libqt5waylandcompositor5 libwayland-client0 ruby sonnet-plugins systemsettings va-driver-all xdg-dbus-proxy apt-xapian-index libqapt3 libqapt3-runtime neon-apport python3-apport python3-problem-report python3-systemd python3-xapian qapt-batch debconf-kde-helper software-properties-qt ksystemlog ubuntu-drivers-common libcanberra-pulse plasma-pa pulseaudio-module-gsettings python3-psutil xbase-clients xinit xvfb dolphin kfind kwrite libdolphinvcs5 libkuserfeedbackwidgets1 fonts-urw-base35 libgs9 libgs9-common libijs-0.35 libjbig2dec0 libkf5kexiv2-15.0.0 libokular5core9 libpaper1 libqmobipocket2 libspectre1 qml-module-org-kde-syntaxhighlighting okular okular-backends kde-spectacle libkcolorpicker0 libkf5kipi-data libkf5kipi32.0.0 libkimageannotator-common libkimageannotator0 mesa-utils-extra khotkeys kaccounts-integration libkf5guiaddons-bin libpaper-utils libvlc-bin alsa-base alsa-utils anacron distro-release-notifier dolphin-plugins drkonqi-pk-debug-installer fonts-noto-color-emoji fonts-noto-core fonts-noto-hinted fonts-noto-ui-core ghostscript ghostscript-x gwenview inputattach kdegraphics-thumbnailers kdeplasma-addons-data kross ksystemstats kwin-addons libaio1 libappimage0 libatopology2 libglu1-mesa libiw30 libjasper4 libkf5krosscore5 libkf5krossui5 libkf5unitconversion-data libkf5unitconversion5 libmng2 libqt5script5 libqt5xmlpatterns5 linux-sound-base neon-adwaita neon-configure-inotify neon-keyring neon-settings-2 neon-ubuntu-advantage-tools plasma-calendar-addons plasma-dataengines-addons plasma-runners-addons plasma-systemmonitor plasma-vault plasma-wallpapers-addons plasma-widgets-addons qml-module-org-kde-breeze qml-module-org-kde-kio qml-module-qt-labs-qmlmodels qml-module-qtquick-xmllistmodel qml-module-qtwebengine qt5-image-formats-plugins ubuntu-release-upgrader-qt xfonts-base xfonts-encodings xfonts-utils xinput --no-install-recommends" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% KDE Neon User Edition.log" 2>&1
 %GO% "apt --fix-broken install"
 %GO% "apt install -f"
+
+%GO% "update-alternatives --set iptables /usr/sbin/iptables-legacy"
 
 REM ## Additional items to install can go here...
 REM ## %GO% "cd /tmp ; wget https://files.multimc.org/downloads/multimc_1.4-1.deb"
@@ -234,8 +233,9 @@ ECHO @Powershell.exe -Command "Start-Sleep 3"                          >> "%DIST
 ECHO @START /MIN "%DISTRO%" WSL.EXE ~ -u root -d %DISTRO% -e initwsl 2 >> "%DISTROFULL%\Init.cmd"
 
 ECHO @WSL ~ -u %XU% -d %DISTRO% > "%DISTROFULL%\%DISTRO% (%XU%) Console.cmd"
-POWERSHELL -Command "Copy-Item '%DISTROFULL%\%DISTRO% (%XU%) Console.cmd' ([Environment]::GetFolderPath('Desktop'))"
-POWERSHELL -Command "Copy-Item '%DISTROFULL%\%DISTRO% (%XU%) Desktop.rdp' ([Environment]::GetFolderPath('Desktop'))"
+
+rem POWERSHELL -Command "Copy-Item '%DISTROFULL%\%DISTRO% (%XU%) Console.cmd' ([Environment]::GetFolderPath('Desktop'))"
+rem POWERSHELL -Command "Copy-Item '%DISTROFULL%\%DISTRO% (%XU%) Desktop.rdp' ([Environment]::GetFolderPath('Desktop'))"
 
 POWERSHELL -C "$WAI = (whoami) ; (Get-Content .\rootfs\tmp\kWSL\kWSL.xml).replace('AAAA', $WAI) | Set-Content .\rootfs\tmp\kWSL\kWSL.xml"
 POWERSHELL -C "$WAC = (pwd)    ; (Get-Content .\rootfs\tmp\kWSL\kWSL.xml).replace('QQQQ', $WAC) | Set-Content .\rootfs\tmp\kWSL\kWSL.xml"
