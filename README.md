@@ -1,3 +1,20 @@
+# I GAVE UP 
+
+### DO NOT USE THIS
+
+I gave up. Fix one issue, 3 new ones appear and I do not have the patience nor the knowledge to fix all of them. <br>
+Even if I would fix them, this script would evidently just _barely_ work. Too much incompatibility. To much broken stuff.<br>
+For the sake of my sanity, I shall just accept that there is no way to run KDE Neon in WSL, even though it saddens me deeply. <br>
+But fret not! I am currently working on a guide to install Kubuntu in KDE which appears to be way easier.<br><br>
+You can check it out here: <br>
+https://gist.github.com/NullDev/b727960ec955dd427896f7b607897b37 <br><br>
+This repository shall remain as a memorial of the agony and suffering I went through. <br>
+It shall also serve as a warning to anyone who may dare to try running KDE Neon on WSL. <br>
+If this isn't enough to stop your brave soul, I just want to remind you that this repository is a fork of a fork. <br>
+People failed before me, and people will fail after me.
+
+---
+
 # [kWSL.cmd - KDE Neon for WSL](https://github.com/NullDev/NeonWSL)
 
 - Net-install of KDE Neon on WSL2 using xRDP.
