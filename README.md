@@ -35,7 +35,7 @@ People failed before me, and people will fail after me.
 From an elevated CMD.EXE prompt change to your desired install directory and type/paste the following command:
 
 ```batch
-PowerShell -executionpolicy bypass -command "wget https://github.com/NullDev/NeonWSL/raw/master/kWSL.cmd -UseBasicParsing -OutFile kWSL.cmd ; .\kWSL.cmd"
+PowerShell -executionpolicy bypass -command "wget https://github.com/NullDev/kWSL/raw/desktopEcho_revert/kWSL.cmd -UseBasicParsing -OutFile kWSL.cmd ; .\kWSL.cmd"
 ```
 
 It will ask you a number of questions. At this time you should go with the default. bionic and jammy have not been verified, but all the steps are implemented.

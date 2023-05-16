@@ -19,7 +19,7 @@ echo Working dir : %cd%
 COLOR 1F
 SET GITORG=NullDev
 SET GITPRJ=kWSL
-SET BRANCH=echo_master
+SET BRANCH=desktopEcho_revert
 SET BASE=https://github.com/%GITORG%/%GITPRJ%/raw/%BRANCH%
 SET GETLXRUNOFFLINE=https://nulldev.org/cdn/LxRunOffline-v3.5.0-11-msvc.zip
 SET GETGISTCODE=%BASE%/excludeWSL.ps1
