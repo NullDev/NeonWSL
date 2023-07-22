@@ -66,7 +66,7 @@ wsl --set-default-version 2
 START /WAIT /MIN "Installing Distro Base..." "%TEMP%\LxRunOffline.exe" "i" "-v" "2" "-n" "%DISTRO%" "-f" "%TEMP%\Ubuntu2023.tar.gz" "-d" "%DISTROFULL%"
 
 REM stop distro, convert to WSL2, start distro and continue
-ECHO [&TIME:~0,8%] Converting to WSL2 (~1m30s)
+ECHO [%TIME:~0,8%] Converting to WSL2 (~1m30s)
 wslconfig /t %DISTRO%
 wsl --set-version %DISTRO% 2
 
