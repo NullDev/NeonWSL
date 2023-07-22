@@ -16,10 +16,10 @@ FOR /f "delims=" %%a in ('powershell -ExecutionPolicy bypass -command "%TEMP%\wi
 CLS && SET RUNSTART=%date% @ %time:~0,5%
 IF EXIST .\CMD.EXE CD ..\..
 
-ECHO [kWSL Installer 20220921]
+ECHO [kWSL2 Installer vong shamlo her]
 ECHO:
 ECHO Set a name for this KDE Neon instance.  Hit Enter to use default. 
-SET DISTRO=NeonWSL& SET /p DISTRO=Keep this name simple, no space or underscore characters [NeonWSL]: 
+SET DISTRO=kwsl2& SET /p DISTRO=Keep this name simple, no space or underscore characters [kwsl2]: 
 IF EXIST "%DISTRO%" (ECHO. & ECHO Folder exists with that name, choose a new folder name. & PAUSE & GOTO DI)
 WSL.EXE -d %DISTRO% -e . > "%TEMP%\InstCheck.tmp"
 FOR /f %%i in ("%TEMP%\InstCheck.tmp") do set CHKIN=%%~zi 
@@ -29,7 +29,6 @@ SET SSHPRT=3322& SET /p SSHPRT=Port number for SSHd traffic or hit Enter to use 
                  SET /p WINDPI=Set a custom DPI scale, or hit Enter for Windows default [%WINDPI%]: 
 FOR /f "delims=" %%a in ('PowerShell -Command "%WINDPI% * 96" ') do set "LINDPI=%%a"
 FOR /f "delims=" %%a in ('PowerShell -Command 40 * "%WINDPI%" ') do set "KPANEL=%%a"
-SET DEFEXL=NONO& SET /p DEFEXL=[Not recommended!] Type X to eXclude from Windows Defender: 
 SET DISTROFULL=%CD%\%DISTRO%
 SET _rlt=%DISTROFULL:~2,2%
 IF "%_rlt%"=="\\" SET DISTROFULL=%CD%%DISTRO%
@@ -58,7 +57,7 @@ ECHO @NETSH AdvFirewall Firewall del rule name="%DISTRO% KDE Connect"           
 ECHO @NETSH AdvFirewall Firewall del rule name="%DISTRO% KDEinit"                                             >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO @RD /S /Q "%DISTROFULL%"                                                                                 >> "%DISTROFULL%\Uninstall %DISTRO%.cmd"
 ECHO Installing kWSL Distro [%DISTRO%] to "%DISTROFULL%" & ECHO This will take a few minutes, please wait... 
-IF %DEFEXL%==X (POWERSHELL.EXE -Command "wget %BASE%/excludeWSL.ps1 -UseBasicParsing -OutFile '%DISTROFULL%\excludeWSL.ps1'" & START /WAIT /MIN "Add exclusions in Windows Defender" "POWERSHELL.EXE" "-ExecutionPolicy" "Bypass" "-Command" ".\excludeWSL.ps1" "%DISTROFULL%" &  DEL ".\excludeWSL.ps1")
+POWERSHELL.EXE -Command "wget %BASE%/excludeWSL.ps1 -UseBasicParsing -OutFile '%DISTROFULL%\excludeWSL.ps1'" & START /WAIT /MIN "Add exclusions in Windows Defender" "POWERSHELL.EXE" "-ExecutionPolicy" "Bypass" "-Command" ".\excludeWSL.ps1" "%DISTROFULL%" &  DEL ".\excludeWSL.ps1"
 ECHO:& ECHO [%TIME:~0,8%] Importing distro userspace (~1m30s)
 START /WAIT /MIN "Installing Distro Base..." "%TEMP%\LxRunOffline.exe" "i" "-n" "%DISTRO%" "-f" "%TEMP%\Ubuntu2023.tar.gz" "-d" "%DISTROFULL%"
 (FOR /F "usebackq delims=" %%v IN (`PowerShell -Command "whoami"`) DO set "WAI=%%v") & ICACLS "%DISTROFULL%" /grant "%WAI%":(CI)(OI)F > NUL
