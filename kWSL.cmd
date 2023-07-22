@@ -23,6 +23,7 @@ SET DISTRO=kwsl2& SET /p DISTRO=Keep this name simple, no space or underscore ch
 IF EXIST "%DISTRO%" (ECHO. & ECHO Folder exists with that name, choose a new folder name. & PAUSE & GOTO DI)
 WSL.EXE -d %DISTRO% -e . > "%TEMP%\InstCheck.tmp"
 FOR /f %%i in ("%TEMP%\InstCheck.tmp") do set CHKIN=%%~zi 
+
 IF %CHKIN% == 0 (ECHO. & ECHO There is a WSL distribution registered with that name; uninstall it or choose a new name. & PAUSE & GOTO DI)
 SET RDPPRT=3399& SET /p RDPPRT=Port number for xRDP traffic or hit Enter to use default [3399]: 
 SET SSHPRT=3322& SET /p SSHPRT=Port number for SSHd traffic or hit Enter to use default [3322]: 
@@ -85,7 +86,7 @@ ECHO [%TIME:~0,8%] Remove un-needed packages (~1m30s)
 %GO% "DEBIAN_FRONTEND=noninteractive apt-get -y purge apparmor apport bolt cloud-init cloud-initramfs-copymods cloud-initramfs-dyn-netconf cryptsetup cryptsetup-initramfs dmeventd finalrd fwupd initramfs-tools initramfs-tools-core irqbalance isc-dhcp-client klibc-utils kpartx libaio1 libarchive13 libdevmapper-event1.02.1 libefiboot1 libefivar1 libestr0 libfastjson4 libfwupd2 libgcab-1.0-0 libgpgme11 libgudev-1.0-0 libgusb2 libisc-export1105 libisns0 libjson-glib-1.0-0 libjson-glib-1.0-common libklibc liblvm2cmd2.03 libmspack0 libnuma1 libsgutils2-2 libsmbios-c2 libxmlsec1 libxmlsec1-openssl libxslt1.1 linux-base lvm2 lz4 mdadm multipath-tools open-iscsi open-vm-tools overlayroot plymouth plymouth-theme-ubuntu-text popularity-contest sbsigntool secureboot-db sg3-utils sg3-utils-udev snapd squashfs-tools thin-provisioning-tools tpm-udev zerofree ; apt-get -y autoremove --purge" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Remove un-needed packages.log" 2>&1
 
 ECHO [%TIME:~0,8%] Install base Desktop packages (~1m30s)
-%GO% "DEBIAN_FRONTEND=noninteractive apt-fast -y install picom xrdp xorgxrdp fonts-cascadia-code" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Remote Base Desktop Components.log" 2>&1
+%GO% "DEBIAN_FRONTEND=noninteractive apt-fast -y install picom xrdp xorgxrdp fonts-cascadia-code openssh-client openssh-server" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Remote Base Desktop Components.log" 2>&1
 
 ECHO [%TIME:~0,8%] Install libfdk-aac1_0.1.6-1_amd64.deb (~1m30s)
 %GO% "DEBIAN_FRONTEND=noninteractive dpkg -i /tmp/kWSL/deb/libfdk-aac1_0.1.6-1_amd64.deb" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% libfdk-aac1_0.1.6-1_amd64.deb.log" 2>&1
