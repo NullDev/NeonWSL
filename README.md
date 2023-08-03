@@ -1,6 +1,10 @@
-# NOTE!  
-# Project in hiatus due to crashes in Qt-DBUS on WSL1 :(
-# [xWSL](https://github.com/DesktopECHO/xWSL) and [Kali-xRDP](https://github.com/DesktopECHO/Kali-xRDP) continue to work reliably.
+# Its over... 
+## The fight is finally over. 
+## It's been almost a year. 
+## IT FINALLY WORKS
+
+![image](https://github.com/NullDev/kWSL/assets/22935000/bca64497-03b7-4ea1-94f1-78e05916b3f7)
+
 _______________________________
 # kWSL.cmd - KDE Neon for WSL
 
