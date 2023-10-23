@@ -1,5 +1,33 @@
 @ECHO OFF & NET SESSION >NUL 2>&1 
-IF %ERRORLEVEL% == 0 (ECHO Administrator check passed...) ELSE (ECHO You need to run this command with administrative rights.  Is User Account Control enabled? && pause && goto ENDSCRIPT)
+
+IF "%PROCESSOR_ARCHITECTURE%" EQU "amd64" (
+    >nul 2>&1 "%SYSTEMROOT%\SysWOW64\cacls.exe" "%SYSTEMROOT%\SysWOW64\config\system"
+) ELSE (
+    >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+)
+
+if '%errorlevel%' NEQ '0' (
+    echo Requesting administrative privileges...
+    goto UACPrompt
+) else ( goto gotAdmin )
+
+:UACPrompt
+echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+set params= %*
+echo UAC.ShellExecute "cmd.exe", "/c ""%~s0"" %params:"=""%", "", "runas", 1 >> "%temp%\getadmin.vbs"
+"%temp%\getadmin.vbs"
+del "%temp%\getadmin.vbs"
+exit /B
+
+:gotAdmin
+pushd "%CD%"
+CD /D "%~dp0"
+
+IF %ERRORLEVEL% == 0 (ECHO Administrator check passed...) ELSE (ECHO You need to run this command with administrative rights. Is User Account Control enabled? && pause && goto ENDSCRIPT)
+
+mkdir C:\Users\%USERNAME%\kwsl2
+cd C:\Users\%USERNAME%\kwsl2
+
 COLOR 1F
 SET GITORG=NullDev
 SET GITPRJ=kWSL
@@ -16,7 +44,7 @@ FOR /f "delims=" %%a in ('powershell -ExecutionPolicy bypass -command "%TEMP%\wi
 CLS && SET RUNSTART=%date% @ %time:~0,5%
 IF EXIST .\CMD.EXE CD ..\..
 
-ECHO [kWSL2 Installer vong shamlo her]
+ECHO [kWSL2 Installer by NullDev]
 ECHO:
 ECHO Set a name for this KDE Neon instance.  Hit Enter to use default. 
 SET DISTRO=kwsl2& SET /p DISTRO=Keep this name simple, no space or underscore characters [kwsl2]: 
@@ -64,10 +92,6 @@ ECHO:& ECHO [%TIME:~0,8%] Importing distro userspace (~1m30s)
 wsl --set-default-version 2
 
 START /WAIT /MIN "Installing Distro Base..." "%TEMP%\LxRunOffline.exe" "i" "-v" "2" "-n" "%DISTRO%" "-f" "%TEMP%\Ubuntu2023.tar.gz" "-d" "%DISTROFULL%"
-
-REM ECHO Converting to WSL2 (~1m30s)
-REM wslconfig /t %DISTRO%
-REM wsl --set-version %DISTRO% 2
 
 (FOR /F "usebackq delims=" %%v IN (`PowerShell -Command "whoami"`) DO set "WAI=%%v") & ICACLS "%DISTROFULL%" /grant "%WAI%":(CI)(OI)F > NUL
 (COPY /Y "%TEMP%\LxRunOffline.exe" "%DISTROFULL%" > NUL ) & "%DISTROFULL%\LxRunOffline.exe" sd -n "%DISTRO%"
@@ -185,6 +209,11 @@ ECHO Building Scheduled Task...
 POWERSHELL -C "$WAI = (whoami) ; (Get-Content .\rootfs\tmp\kWSL\kWSL.xml).replace('AAAA', $WAI) | Set-Content .\rootfs\tmp\kWSL\kWSL.xml"
 POWERSHELL -C "$WAC = (pwd)    ; (Get-Content .\rootfs\tmp\kWSL\kWSL.xml).replace('QQQQ', $WAC) | Set-Content .\rootfs\tmp\kWSL\kWSL.xml"
 SCHTASKS /Create /TN:%DISTRO% /XML .\rootfs\tmp\kWSL\kWSL.xml /F
+ECHO Converting to WSL2 (~1m30s)
+wslconfig /t %DISTRO%
+wsl --set-version %DISTRO% 2
+wslconfig /t %DISTRO%
+schtasks /run /tn %DISTRO%
 ECHO:
 ECHO:      Start: %RUNSTART%
 ECHO:        End: %RUNEND%
