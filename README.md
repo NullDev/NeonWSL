@@ -1,3 +1,10 @@
+# THIS REPO CONTAINS MY FAILED ATTEMPTS TO SALVAGE NEONWSL ON VARIOUS DIFFERENT BRANCHES.
+# NONE OF IT SHOULD BE USED.
+
+## Use the [original](https://github.com/DesktopECHO/kWSL) instead
+
+---
+
 # kWSL.cmd • KDE Neon 6 Desktop for WSL
 
   - Online install of KDE Neon in WSL, accessible via RDP.  If you prefer GTK, see [**xWSL**](https://github.com/DesktopECHO/xWSL) or [**Kali-xRDP**](https://github.com/DesktopECHO/Kali-xRDP)
