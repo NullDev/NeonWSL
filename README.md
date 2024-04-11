@@ -16,7 +16,7 @@
 From an elevated CMD.EXE prompt change to your desired install directory and type/paste the following command:
 
 ```
-PowerShell -executionpolicy bypass -command "wget https://github.com/DesktopECHO/kWSL/raw/master/kWSL.cmd -UseBasicParsing -OutFile kWSL.cmd ; .\kWSL.cmd"
+PowerShell -executionpolicy bypass -command "wget https://github.com/NullDev/kWSL/raw/master/kWSL.cmd -UseBasicParsing -OutFile kWSL.cmd ; .\kWSL.cmd"
 ```
 
 You will be asked a few questions.  The install script will determine current DPI scaling, or set your own value if preferred:

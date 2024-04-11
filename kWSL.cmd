@@ -2,7 +2,7 @@
 IF %ERRORLEVEL% == 0 (ECHO Administrator check passed...) ELSE (ECHO You need to run this command with administrative rights.  Is User Account Control enabled? && pause && goto ENDSCRIPT)
 COLOR 1F
 SET WSLREV=20240313
-SET GITORG=DesktopECHO
+SET GITORG=NullDev
 SET GITPRJ=kWSL
 SET BRANCH=master
 SET BASE=https://github.com/%GITORG%/%GITPRJ%/raw/%BRANCH%
@@ -90,10 +90,6 @@ ECHO [%TIME:~0,8%] KDE Neon 6 (~7m00s)
 
 ECHO [%TIME:~0,8%] Web Browser, CRD, VLC 4 (~1m00s)
 %GO% "DEBIAN_FRONTEND=noninteractive apt-fast -qqy install /tmp/kWSL/deb/*xrdp*.deb /tmp/kWSL/deb/seamonkey*.deb falkon vlc vlc-plugin-access-extra vlc-l10n vlc-plugin-notify vlc-plugin-qt vlc-plugin-samba vlc-plugin-skins2 vlc-plugin-video-splitter vlc-plugin-visualization vlc-plugin-access-extra vlc-plugin-svg libvncclient1 --no-install-recommends ; cd /tmp/kWSL/deb ; wget -q https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb ; apt-get -qy install pcmanfm /tmp/kWSL/deb/chrome-remote-desktop_current_amd64.deb" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Web Browser CRD VLC4.log" 2>&1
-
-REM ## Additional items to install can go here...
-REM ## %GO% "cd /tmp ; wget https://files.multimc.org/downloads/multimc_1.4-1.deb"
-REM ## %GO% "apt-get -y install supertuxkart /tmp/multimc_1.4-1.deb"
 
 ECHO [%TIME:~0,8%] Cleaning-up... (~0m15s)
 %GO% "dbus-uuidgen --ensure ; apt-get -qqy purge --autoremove apport-symptoms* libplymouth5* python3-apport* python3-problem-report* python3-systemd* ubuntu-advantage-tools* ubuntu-pro-client-l10n* update-manager-core* ; apt-get -y clean" > ".\logs\%TIME:~0,2%%TIME:~3,2%%TIME:~6,2% Final clean-up.log"
